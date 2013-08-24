@@ -1,4 +1,4 @@
-retwisn
-=======
+Retwis-N
+========
 
-A Retwis port to node.js
+A [Retwis](http://redis.io/topics/twitter-clone) port to node.js

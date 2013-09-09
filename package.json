@@ -1,0 +1,34 @@
+{
+  "name": "retwis-n",
+  "version": "0.0.1",
+  "description": "Retwis-N",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/selimober/retwisn.git"
+  },
+  "keywords": [
+    "retwisn",
+    "twitter",
+    "clone",
+    "redis"
+  ],
+  "author": "Selim Ober <selim.ober@gmail.com>",
+  "dependencies": {
+    "express": "3.3.5",
+    "yaml-config": "0.3.0",
+    "redis": "0.8.4"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0",
+    "should": "~1.2.2",
+    "sinon": "~1.7.3",
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-shell": "~0.3.0",
+    "grunt-mocha-cli": "~1.0.7",
+    "grunt-coffeelint": "0.0.7"
+  }
+}

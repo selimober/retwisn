@@ -1,0 +1,20 @@
+default:
+   app:
+      port: 3000
+      host: '0.0.0.0'
+      logDir: 'logs'
+      domain: 'localhost'
+   misc:
+      oneDay: 86400000 # 1 day in milliseconds
+      oneHour: 3600000 # 1 hour in milliseconds
+      oneMinute: 60000 # 1 minute in milliseconds
+test:
+   app:
+      port: 3000
+      host: '0.0.0.0'
+      logDir: 'logs'
+production:
+   app:
+      port: 3000
+      host: '0.0.0.0'
+      logDir: 'logs'

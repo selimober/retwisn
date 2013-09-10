@@ -4,10 +4,11 @@ http = require 'http'
 config = require 'yaml-config'
 redis = require "redis"
 
+app = express()
+
 # Configuration
 settings = config.readConfig require.resolve './conf/config.yaml'
-
-app = express()
+app.set 'settings', settings
 
 app.use app.router
 
@@ -15,9 +16,11 @@ routes = require './conf/routes'
 routes app
 
 process.on 'SIGINT', ->
-  require('./provider')().releaseResources()
+  require('./provider').releaseResources()
   process.exit()
 
-http.createServer(app).listen(3000)
+# run it
+server = http.createServer app
+server.listen settings.app.port
 
 

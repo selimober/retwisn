@@ -110,6 +110,11 @@ describe 'UserController', ->
         param:
           password: 'secret'
           username: 'user'
+        app:
+          get: ->
+            app:
+              domain: 'localhost'
+              authCookieName: 'auth'
       @res.cookie = sinon.spy()
       @res.redirect = sinon.spy()
 

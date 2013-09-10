@@ -4,6 +4,11 @@ default:
       host: '0.0.0.0'
       logDir: 'logs'
       domain: 'localhost'
+      authCookieName: 'auth'
+      authCookieMaxAge: 3600 # 1 hour in seconds
+   redis:
+      host: '127.0.0.1'
+      port: '6379'
    misc:
       oneDay: 86400000 # 1 day in milliseconds
       oneHour: 3600000 # 1 hour in milliseconds

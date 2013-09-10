@@ -34,7 +34,10 @@ class UserController
         if err?
           sendError res, 400, '/home', err.message
         else
-          res.cookie 'auth', authString, {domain: '.localhost', expires: new Date(Date.now() + 3600)}
+          settings = req.app.get 'settings'
+          cookieName = settings.app.authCookieName
+          domain = settings.app.domain
+          res.cookie cookieName, authString, {domain: ".#{domain}", 'Max-Age': settings.app.authCookieMaxAge}
           res.redirect '/timeline'
 
 

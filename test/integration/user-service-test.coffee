@@ -6,7 +6,8 @@ UserService = require "../../service/user-service"
 describe "UserService", ->
 
   before ->
-    @redis = require("redis").createClient()
+    provider = require '../../conf/provider'
+    @redis = provider.createRedisClient()
     @username = 'selim' + new Date / 1000
 
   describe "createUser", ->

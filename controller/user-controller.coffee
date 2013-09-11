@@ -40,6 +40,18 @@ class UserController
           res.cookie cookieName, authString, {domain: ".#{domain}", 'Max-Age': settings.app.authCookieMaxAge}
           res.redirect '/timeline'
 
+  follow: (req, res) =>
+    followingUsername = req.loggedInUsername
+    followedUserName = req.param.followedUserName
+
+    if not (followingUsername?.length and followedUserName?.length)
+      sendError res, 400, '/timeline', "Username empty"
+    else
+      @userService.follow followingUsername, followedUserName, (err) ->
+        if err?
+          sendError res, 400, '/timeline', err.message
+        else
+          res.redirect '/timeline'
 
 
 module.exports = UserController

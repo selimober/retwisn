@@ -6,9 +6,10 @@ UserController = require '../../controller/user-controller'
 
 describe 'UserController', ->
 
-  before ->
+  beforeEach ->
     @res =
       render: sinon.spy()
+      redirect: sinon.spy()
       status: => @res
 
   describe 'createUser', ->
@@ -24,7 +25,7 @@ describe 'UserController', ->
       sut.createUser req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'ERROR'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'ERROR'}
 
     it 'should render to /home with error if password empty', ->
       # Arrange
@@ -38,7 +39,7 @@ describe 'UserController', ->
       sut.createUser req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'ERROR'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'ERROR'}
 
     it 'should render to /home with success when called with username and password', ->
 
@@ -57,7 +58,7 @@ describe 'UserController', ->
       sut.createUser req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'OK'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'OK'}
 
   describe 'login', ->
     it 'should render to /home with error if username or password is empty', ->
@@ -72,7 +73,7 @@ describe 'UserController', ->
       sut.login req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'ERROR'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'ERROR'}
 
       # Arrange
       req =
@@ -84,7 +85,7 @@ describe 'UserController', ->
       sut.login req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'ERROR'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'ERROR'}
 
     it 'should render to /home with error if username / password don\'t match', ->
       # Arange
@@ -102,7 +103,7 @@ describe 'UserController', ->
       sut.login req, @res
 
       # Assert
-      sinon.assert.calledWithMatch @res.render, '/home', {status: 'ERROR'}
+      sinon.assert.calledWith @res.render, '/home', sinon.match {status: 'ERROR'}
 
     it 'should redirect to /timeline and set the auth cookie to authSecret if username / password match', ->
       # Arange
@@ -116,7 +117,6 @@ describe 'UserController', ->
               domain: 'localhost'
               authCookieName: 'auth'
       @res.cookie = sinon.spy()
-      @res.redirect = sinon.spy()
 
       authSecret = 'zxcasdq12dsadsa'
 
@@ -131,3 +131,52 @@ describe 'UserController', ->
       # Assert
       sinon.assert.calledWith @res.cookie, 'auth', authSecret
       sinon.assert.calledWith @res.redirect, '/timeline'
+
+  describe 'follow', ->
+    it 'should redirect to /timeline given an existing username to follow', ->
+      # Arrange
+      req =
+        param:
+          followedUserName: 'cem'
+        loggedInUsername: 'selim'
+
+      userService =
+        follow: (user1, user2, callback) ->
+          callback null
+
+      # Act
+      sut = new UserController userService
+      sut.follow req, @res
+
+      # Assert
+      sinon.assert.calledWith @res.redirect, '/timeline'
+
+    it 'should render /timeline with error given an empty following and followed username', ->
+      # Arrange
+      req =
+        param: {}
+
+      # Act
+      sut = new UserController
+      sut.follow req, @res
+
+      # Assert
+      sinon.assert.calledWith @res.render, '/timeline', sinon.match {status: 'ERROR'}
+
+    it 'should render /timeline with error given an unexisting username', ->
+      # Arrange
+      req =
+        param:
+          followedUserName: 'cem'
+        loggedInUsername: 'selim'
+
+      userService =
+        follow: (user1, user2, callback) ->
+          callback new Error
+
+      # Act
+      sut = new UserController userService
+      sut.follow req, @res
+
+      # Assert
+      sinon.assert.calledWith @res.render, '/timeline', sinon.match {status: 'ERROR'}

@@ -44,5 +44,24 @@ class UserService
                 uid: nextUserId
               }
 
+  follow: (followingUsername, followedUsername, callback) ->
+
+    @fetchUserByUserName followedUsername, (err, followedUser) =>
+      if not followedUser?
+        callback new Error "No user called #{followedUser?.username}"
+      else
+        @fetchUserByUserName followingUsername, (err, followingUser) =>
+          if not followingUser?
+            callback new Error "No user called #{followingUser.username}"
+          else
+            @redis.multi()
+              # add followed user to following list
+              .sadd(keys.uid_following(followingUser.uid), followedUser.uid)
+
+              # add following user to the followers list
+              .sadd(keys.uid_followers(followedUser.uid), followingUser.uid)
+
+              .exec (err, replies) =>
+                callback err
 
 module.exports = UserService

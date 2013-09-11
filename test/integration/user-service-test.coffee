@@ -2,6 +2,7 @@ assert = require "assert"
 sinon = require "sinon"
 should = require "should"
 UserService = require "../../service/user-service"
+keys = require "../../model/data"
 
 describe "UserService", ->
 
@@ -9,13 +10,16 @@ describe "UserService", ->
     provider = require '../../conf/provider'
     @redis = provider.createRedisClient()
     @username = 'selim' + new Date / 1000
+    @username2 = 'cem' + new Date / 1000
+    @usernameUid = null
 
   describe "createUser", ->
     it 'should create a User with user id given a username and a password', (done) ->
       sut = new UserService(@redis)
 
       password = 's123'
-      sut.createUser @username, password, (err, user) ->
+      sut.createUser @username, password, (err, user) =>
+        @usernameUid = user.uid
         user.should.have.property 'username', @username
         user.should.not.have.property 'password'
         should.exist user.uid
@@ -38,6 +42,21 @@ describe "UserService", ->
         user.should.have.property 'username', @username
         should.exist user.uid
         done()
+
+  describe 'follow', ->
+    it 'should add appropriate usernames to following and followers sets', (done) ->
+      sut = new UserService @redis
+
+      sut.createUser @username2, 'secret', (err, user) =>
+        sut.follow @username, @username2, (err) =>
+          should.not.exist err
+          @redis.sismember keys.uid_followers(user.uid), @usernameUid, (err, response) =>
+            response.should.be.ok
+            @redis.sismember keys.uid_following(@usernameUid), user.uid, (err, response) ->
+              response.should.be.ok
+              done()
+
+
 
   after ->
     @redis.quit()

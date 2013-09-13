@@ -1,4 +1,5 @@
 keys = require "../model/data"
+crypto = require 'crypto'
 
 class UserService
   constructor: (@redis) ->
@@ -25,7 +26,7 @@ class UserService
       else
         # inc global next user Id
         @redis.incr keys.global.nextUserId, (err, nextUserId) =>
-
+          nextUserId = '' + nextUserId
           @redis.multi()
             # set uid:nextUserId:username username
             .set(keys.uid_username(nextUserId), username)
@@ -63,5 +64,35 @@ class UserService
 
               .exec (err, replies) =>
                 callback err
+
+  login: (username, password, expireInMillis, callback) ->
+    @fetchUserByUserName username, (err, user) =>
+      if err? or not user?
+        callback err if err? else new Error "No user called #{username}"
+      else
+        @redis.get keys.uid_password(user.uid), (err, reply) =>
+          if err?
+            callback err
+          else
+            user.password = reply
+            if user.password is password
+              authKey = generateAuthKey()
+              @redis.multi()
+                # add authentication key to uid
+                .set(keys.uid_auth(user.uid), authKey)
+                # set expiration
+                .pexpire(keys.uid_auth(user.uid), expireInMillis)
+                # add uid to authentication key
+                .set(keys.auth_uid(authKey), user.uid)
+                # set expiration
+                .pexpire(keys.auth_uid(authKey), expireInMillis)
+
+                .exec (err, replies) =>
+                  callback err, authKey
+            else
+              callback new Error "Username password mismatch"
+
+generateAuthKey = ->
+  crypto.createHash('sha1').update('' + (new Date()).getTime()).digest('hex')
 
 module.exports = UserService

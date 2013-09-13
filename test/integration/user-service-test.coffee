@@ -9,9 +9,9 @@ describe "UserService", ->
   before ->
     provider = require '../../conf/provider'
     @redis = provider.createRedisClient()
-    @user1Name = 'selim' + new Date().getMilliseconds()
+    @user1Name = 'selim' + new Date().getTime()
     @password = '1234'
-    @user2Name = 'cem' + new Date().getMilliseconds()
+    @user2Name = 'cem' + new Date().getTime()
     @user1Uid = null
 
   describe "createUser", ->

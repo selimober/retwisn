@@ -10,8 +10,15 @@ module.exports = ( ->
     getUserService: ->
       @redisClient = @createRedisClient()
 
-      UserService = require './service/user-service'
+      UserService = require '../service/user-service'
       new UserService(@redisClient)
+
+    getPostService: ->
+      @redisClient = @createRedisClient()
+
+      PostService = require '../service/post-service'
+      new PostService(@redisClient)
+
 
     releaseResources: ->
       if @redisClient?

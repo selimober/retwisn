@@ -14,6 +14,8 @@ module.exports = (grunt) ->
     watch:
       files: my_files.concat(my_test_files)
       tasks: ['lint', 'test']
+      options:
+        interval: 5007
 
     coffeelint:
       app: my_files.concat(my_test_files)

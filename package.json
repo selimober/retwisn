@@ -17,7 +17,8 @@
   "dependencies": {
     "express": "3.3.5",
     "yaml-config": "0.3.0",
-    "redis": "0.8.4"
+    "redis": "0.8.4",
+    "swagger-node-express": "*"
   },
   "devDependencies": {
     "mocha": "~1.12.0",

@@ -1,5 +1,6 @@
 HomeController = require '../controller/home-controller'
 UserController = require '../controller/user-controller'
+PostController = require '../controller/post-controller'
 
 module.exports = (app) ->
 
@@ -10,3 +11,7 @@ module.exports = (app) ->
 
   userController = new UserController provider.getUserService()
   app.post '/user', userController.createUser
+
+  postController = new PostController provider.getPostService()
+  # app.get '/user/:username/timeline', postController.fetchUserTimeline
+  # app.post '/user/:username/post', postController.post

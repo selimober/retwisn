@@ -10,13 +10,14 @@ app = express()
 settings = config.readConfig require.resolve './conf/config.yaml'
 app.set 'settings', settings
 
+app.use express.bodyParser
 app.use app.router
 
 routes = require './conf/routes'
 routes app
 
 process.on 'SIGINT', ->
-  require('./provider').releaseResources()
+  require('./conf/provider').releaseResources()
   process.exit()
 
 # run it

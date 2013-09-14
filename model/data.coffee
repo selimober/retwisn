@@ -2,6 +2,7 @@ module.exports = {
   global: {
     nextUserId: "global:nextUserId"
     nextPostId: "global:nextPostId"
+    timeline: "global:timeline"
   }
 
   # SET uid:1000:username antirez

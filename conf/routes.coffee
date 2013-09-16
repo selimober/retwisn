@@ -13,5 +13,5 @@ module.exports = (app) ->
   app.post '/user', userController.createUser
 
   postController = new PostController provider.getPostService()
-  # app.get '/user/:username/timeline', postController.fetchUserTimeline
-  # app.post '/user/:username/post', postController.post
+  app.get '/user/:username/timeline', postController.fetchUserTimeline
+  app.post '/user/:username/post', postController.post

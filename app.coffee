@@ -1,6 +1,5 @@
 # Node Libraries
 express = require 'express'
-http = require 'http'
 config = require 'yaml-config'
 redis = require "redis"
 
@@ -9,8 +8,15 @@ app = express()
 # Configuration
 settings = config.readConfig require.resolve './conf/config.yaml'
 app.set 'settings', settings
+app.set 'views', './views'
+app.set 'view engine', 'jade';
 
-app.use express.bodyParser
+app.use (req, res, next) ->
+  console.log('%s %s', req.method, req.url)
+  next()
+
+app.use express.json()
+app.use (req, res, next) ->
 app.use app.router
 
 routes = require './conf/routes'
@@ -21,7 +27,7 @@ process.on 'SIGINT', ->
   process.exit()
 
 # run it
-server = http.createServer app
-server.listen settings.app.port
+app.listen settings.app.port, ->
+  console.log('App started on port ' + settings.app.port)
 
 

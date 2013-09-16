@@ -15,10 +15,11 @@
   ],
   "author": "Selim Ober <selim.ober@gmail.com>",
   "dependencies": {
-    "express": "3.3.5",
+    "express": "3.4.0",
     "yaml-config": "0.3.0",
     "redis": "0.8.4",
-    "swagger-node-express": "*"
+    "swagger-node-express": "*",
+    "jade": "*"
   },
   "devDependencies": {
     "mocha": "~1.12.0",

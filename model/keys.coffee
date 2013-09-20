@@ -20,12 +20,6 @@ module.exports = {
   # uid:1000:posts => a List of post ids, every new post is LPUSHed here.
   uid_posts: (uid) -> "uid:" + uid + ":posts"
 
-  # SET uid:1000:auth fea5e81ac8ca77622bed1c2132a021f9
-  uid_auth: (uid) -> "uid:" + uid + ":auth"
-
-  # SET auth:fea5e81ac8ca77622bed1c2132a021f9 1000
-  auth_uid: (secret) -> "auth:" + secret
-
   # SET username:antirez:uid 1000
   username_uid: (username) -> "username:" + username + ":uid"
 

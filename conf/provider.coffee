@@ -1,4 +1,3 @@
-
 redis = require 'redis'
 config = require 'yaml-config'
 
@@ -18,6 +17,12 @@ module.exports = ( ->
 
       PostService = require '../service/post-service'
       new PostService(@redisClient)
+
+    getSessionService: ->
+      @redisClient = @createRedisClient()
+
+      SessionService = require '../service/session-service'
+      new SessionService(@redisClient)
 
 
     releaseResources: ->

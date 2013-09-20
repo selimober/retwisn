@@ -1,4 +1,4 @@
-keys = require "../model/data"
+keys = require "../model/keys"
 crypto = require 'crypto'
 
 class UserService
@@ -65,10 +65,34 @@ class UserService
               .exec (err, replies) =>
                 callback err
 
-  login: (username, password, expireInMillis, callback) ->
+  fetchUsersByUids: (uids, callback) ->
+    multi = @redis.multi()
+    for uid in uids
+      multi = multi.get(keys.uid_username(uid))
+    multi.exec (err, replies) ->
+      callback err, replies
+
+  fetchFollowers: (username, callback) ->
+    @redis.get keys.username_uid(username), (err, uid) =>
+      @redis.smembers keys.uid_followers(uid), (err, followers) =>
+        @fetchUsersByUids followers, (err, usernames) ->
+          callback err, usernames
+
+  fetchFollowings: (username, callback) ->
+    @redis.get keys.username_uid(username), (err, uid) =>
+      @redis.smembers keys.uid_following(uid), (err, followings) =>
+        @fetchUsersByUids followings, (err, usernames) ->
+          callback err, usernames
+
+  lastRegistered: (callback) ->
+    @redis.lrange keys.uid, 0, 20, (err, uids) =>
+      @fetchUsersByUids uids, (err, usernames) ->
+        callback err, usernames
+
+  login: (username, password, callback) ->
     @fetchUserByUserName username, (err, user) =>
       if err? or not user?
-        callback err if err? else new Error "No user called #{username}"
+        callback(err ? new Error "No user called #{username}")
       else
         @redis.get keys.uid_password(user.uid), (err, reply) =>
           if err?
@@ -76,23 +100,14 @@ class UserService
           else
             user.password = reply
             if user.password is password
-              authKey = generateAuthKey()
-              @redis.multi()
-                # add authentication key to uid
-                .set(keys.uid_auth(user.uid), authKey)
-                # set expiration
-                .pexpire(keys.uid_auth(user.uid), expireInMillis)
-                # add uid to authentication key
-                .set(keys.auth_uid(authKey), user.uid)
-                # set expiration
-                .pexpire(keys.auth_uid(authKey), expireInMillis)
-
-                .exec (err, replies) =>
-                  callback err, authKey
+              callback()
             else
               callback new Error "Username password mismatch"
 
-generateAuthKey = ->
-  crypto.createHash('sha1').update('' + (new Date()).getTime()).digest('hex')
+  isFollowing: (followingUser, followedUser, callback) ->
+    @redis.get keys.username_uid(followingUser), (err, uid) =>
+      @redis.get keys.username_uid(followedUser), (err, fud) =>
+        @redis.sismember keys.uid_following(uid), fud, (err, reply)  ->
+          callback err, reply
 
 module.exports = UserService

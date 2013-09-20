@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  div.row
+    div.col-md-9
+      div.jumbotron
+        h1 A Twitter clone using Node.js and Redis
+        p.lead Lorem Ipsum dolor sit amet
+
+      div.col-md-6
+        h4 Using Node.js
+        p Uses Node.js
+
+        h4 Using Redis
+        p Uses Redis
+
+        h4 Grunt
+        p Grunt
+
+      div.col-md-6
+        h4 Using Mocha
+        p Mocha testing
+
+        h4 Amazon
+        p deployed to Amazon
+
+        h4 Travis
+        p Tested in travis
+
+    div.col-md-3
+      form.form-signin(action='{{action}}', method='POST', ng-controller='LoginController')
+        h2.form-signin-heading Please sign in
+        input.form-control(type="text",placeholder="Username",autofocus,name="username")
+        input.form-control(type="password",placeholder="Password",name="password")
+        input#password-confirm.form-control.hide(type="password",placeholder="Password", ng-class="{hide: mode == 'in'} ")
+        label.checkbox Remember me
+          input(type="checkbox",value="remember-me")
+        button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign {{mode}}
+        button.btn.btn-link(type="button",ng-click="toggleMode()") Sign {{mode_link}}
+
+

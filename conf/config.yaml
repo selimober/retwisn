@@ -9,6 +9,8 @@ default:
    redis:
       host: '127.0.0.1'
       port: '6379'
+      sessionPrefix: 'sess'
+      sessionSecret: 'skdk2k3kfdcCeke393Fd3'
    misc:
       oneDay: 86400000 # 1 day in milliseconds
       oneHour: 3600000 # 1 hour in milliseconds

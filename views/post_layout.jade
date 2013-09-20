@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .row
+    .col-md-3
+      h3 Welcome #{session.username}
+      form(role="form", method="POST", action="postMessage")
+        .form-group
+          textarea.form-control(rows="3",placeholder="Type your message", name="message")
+        button.btn.btn-default.pull-right(type="submit") Send
+
+    .col-md-6
+      block post_content
+
+    .col-md-3
+      h4 Last registered users
+        ul.list-group(ng-controller="LastRegisteredController")
+          li.list-group-item(ng-repeat="user in users")
+            .postBox.row
+              .col-md-6
+                a(href="#", ng-click="showUser(user)") {{user}}

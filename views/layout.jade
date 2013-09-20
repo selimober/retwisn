@@ -1,0 +1,28 @@
+!!! 5
+html
+  head
+    block head
+      block title
+        title Program Name
+      block meta
+        meta(name='description', content='')
+        meta(name='keywords', content='')
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+      link(rel='stylesheet', href='/assets/css/bootstrap.min.css')
+      link(rel='stylesheet', href='/assets/css/site.css')
+      | <style>
+      | body { padding-top: 20px; }
+      | </style>
+      script(src='/assets/scripts/jquery-2.0.3.min.js')
+  body
+    div.container(ng-app)
+      if typeof error !== "undefined" && error !== null
+        .alert.alert-dismissable.alert-danger
+          button.close(type='button', data-dismiss='alert', aria-hidden='true') &times;
+          strong #{error}
+
+      include header
+
+      block content
+
+      include footer

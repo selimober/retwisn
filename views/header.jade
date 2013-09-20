@@ -1,0 +1,13 @@
+div.header
+  ul.nav.nav-pills.pull-right
+    li
+      a(href="/") Home
+    if session && session.username
+      li
+        a(href="/timeline") Timeline
+    li
+      a(href="#") About
+    if session && session.username
+      li
+        a(href="/logout") Logout
+  h3.text-muted Retwis-N

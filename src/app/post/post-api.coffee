@@ -1,4 +1,4 @@
-class ApiPostController
+class PostAPI
   constructor: (@postService) ->
 
   fetchGlobalTimeline: (req, res) =>
@@ -14,4 +14,4 @@ class ApiPostController
       replies = (post for post in replies when post.user is req.params.username)
       res.send replies
 
-module.exports = ApiPostController
+module.exports = PostAPI

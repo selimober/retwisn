@@ -4,12 +4,12 @@ config = require 'yaml-config'
 redis = require "redis"
 path = require 'path'
 RedisStore = require('connect-redis')(express)
-session = require './controller/session-controller'
+session = require './common/session'
 flash = require 'connect-flash'
 app = express()
 
 # Configuration
-settings = config.readConfig require.resolve './conf/config.yaml'
+settings = config.readConfig require.resolve './common/config.yaml'
 app.set 'settings', settings
 app.set 'views', './views'
 app.set 'view engine', 'jade'
@@ -20,7 +20,7 @@ app.use (req, res, next) ->
   next()
 
 # Send statics
-app.use '/assets/', express.static(path.join(__dirname, 'public'))
+app.use '/assets/', express.static(path.join(__dirname, '../public'))
 
 # Parse POST and fileUploads queries
 app.use express.bodyParser()
@@ -45,7 +45,7 @@ app.use (req, res, next) ->
 
 # Router
 app.use app.router
-routes = require './conf/routes'
+routes = require './common/routes'
 routes app
 
 # Development configuration
@@ -55,7 +55,7 @@ app.configure 'development', ->
 
 
 process.on 'SIGINT', ->
-  require('./conf/provider').releaseResources()
+  require('./common/provider').releaseResources()
   process.exit()
 
 # Run it

@@ -1,4 +1,4 @@
-keys = require "../model/keys"
+keys = require "../common/keys"
 
 class PostService
 

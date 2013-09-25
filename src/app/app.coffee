@@ -60,7 +60,8 @@ process.on 'SIGINT', ->
   process.exit()
 
 # Run it
-app.listen settings.app.port, ->
-  console.log('App started on port ' + settings.app.port)
+port = process.env.PORT || settings.app.port
+app.listen port, ->
+  console.log('App started on port ' + port)
 
 

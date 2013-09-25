@@ -9,7 +9,7 @@ module.exports = (app) ->
   provider = require('./provider')
 
   # HOME - LOGIN - LOGOUT
-  homeController = new HomeController
+  homeController = new HomeController provider.getUserService()
   app.get   '/', homeController.get
   app.post  '/login', homeController.login
   app.get   '/logout', homeController.logout

@@ -1,7 +1,7 @@
 module.exports = (grunt) ->
 
   TARGET_DIR = 'target'
-  DIST_DIR = 'target/dist'
+  DIST_DIR = 'dist'
   APP_DIR = 'src/app'
   my_files = ['app.coffee', 'conf/**/*.coffee',
           'service/**/*.coffee', 'controller/**/*.coffee',
@@ -11,38 +11,12 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
 
-    copy:
-      main:
-        files: [{
-          expand: true
-          cwd: APP_DIR
-          src: ["**/*", "!**/*.coffee"]
-          dest: "#{TARGET_DIR}/app"
-          filter: 'isFile'
-        }]
-
-    coffee:
-      options:
-        sourceMap: true
-
-      compile:
-        expand: true
-        cwd: APP_DIR
-        src: ["**/*.coffee"]
-        dest: "#{TARGET_DIR}/app"
-        ext: '.js'
-
-    mochacli:
-      all: my_test_files
-
-    watch:
-      files: my_files.concat(my_test_files)
-      tasks: ['lint', 'coffee']
-      options:
-        interval: 5007
+    clean:
+      dev: [TARGET_DIR]
+      dist: [DIST_DIR]
 
     coffeelint:
-      app: my_files.concat(my_test_files)
+      app: ["src/**/*.coffee", "test/**/*.coffee"]
       options:
         max_line_length:
           value: 120
@@ -50,12 +24,62 @@ module.exports = (grunt) ->
           value: true
           level: 'error'
 
+    copy:
+      dev:
+        files: [
+          {expand: true, cwd: "src", src: ["**/*"], dest: TARGET_DIR}
+          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{TARGET_DIR}/public"}
+        ]
+      dist:
+        files: [
+          {expand: true, cwd: "src", src: ["**/*", "!**/*.coffee"], dest: DIST_DIR}
+          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{DIST_DIR}/public"}
+        ]
+
+    coffee:
+      options:
+        sourceMap: true
+        sourceRoot: ""
+        bare: true
+
+      compile:
+        files: [
+          {expand: true, cwd: "src", src: ["**/*.coffee"], dest: TARGET_DIR, ext: '.js'}
+        ]
+
+      dist:
+        options:
+          sourceMap: false
+        files: [
+          {expand: true, cwd: "src", src: ["**/*.coffee"], dest: DIST_DIR, ext: '.js'}
+        ]
+
+    mochacli:
+      all: my_test_files
+
+    watch:
+      options:
+        interval: 5007
+        spawn: false
+
+      coffee:
+        files: ['src/**/*.coffee']
+        tasks: ['coffeelint','coffee:compile']
+        options:
+          livereload: true
+
+      other:
+        files: ['src/**/*', '!src/**/*.coffee']
+        tasks: ['copy:dev']
+        options:
+          livereload: true
+
     nodemon:
       dev:
         options:
-          file: 'app.coffee'
-
-          ignoredFiles: ['*.jade', '*.js', 'public/**/*.coffee', '*.css', 'node_modules/**', '.git/**/*']
+          cwd: "#{TARGET_DIR}/app"
+          file: "app.js"
+          ignoredFiles: ["*.jade", 'public/*']
 
     concurrent:
       target:
@@ -63,16 +87,23 @@ module.exports = (grunt) ->
         options:
           logConcurrentOutput: true
 
+  grunt.event.on 'watch', (action, filepath) ->
+    target = filepath.replace 'src/', ''
+    if /coffee$/.test target
+      grunt.config ['coffee', 'compile', 'src'], [target]
+      grunt.config ['coffeelint', 'app'], [filepath]
+    else
+      grunt.config ['copy', 'dev', 'src'], [target]
+
 
   grunt.loadNpmTasks 'grunt-mocha-cli'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-nodemon'
   grunt.loadNpmTasks 'grunt-concurrent'
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask 'test', ['mochacli']
-  grunt.registerTask 'compile', ['copy' ,'coffee']
-  grunt.registerTask 'lint', ['coffeelint']
-  grunt.registerTask 'default', ['lint', 'concurrent']
+  grunt.registerTask 'dist', ['clean:dist', 'coffeelint', 'coffee:dist', 'copy:dist']
+  grunt.registerTask 'default', ['clean:dev', 'coffeelint', 'coffee:compile', 'copy:dev', 'concurrent']

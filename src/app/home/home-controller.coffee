@@ -1,4 +1,9 @@
+redirectError = (req, res, path, message) ->
+  req.flash 'error', message
+  res.redirect path
+
 class HomeController
+  constructor: (@userService) ->
 
   get: (req, res) ->
     errMessage = (req.flash 'error')?[0]

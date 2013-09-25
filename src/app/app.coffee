@@ -1,16 +1,13 @@
 # Node Libraries
 express = require 'express'
 config = require 'yaml-config'
-redis = require "redis"
 path = require 'path'
-RedisStore = require('connect-redis')(express)
 session = require './common/session'
-flash = require 'connect-flash'
 app = express()
 
 # Configuration
 settings = config.readConfig require.resolve './common/config.yaml'
-app.set 'settings', settings
+app.set 'config', settings
 
 # 'app/views' instead of './views' because we start the app as 'node app/app.js'
 app.set 'views', 'app/views'
@@ -29,21 +26,7 @@ app.use express.bodyParser()
 
 # Session Support
 app.use express.cookieParser()
-app.use express.session {
-  store: new RedisStore({
-    host: settings.redis.host
-    port: settings.redis.port
-    prefix: settings.redis.sessionPrefix
-  }),
-  secret: settings.redis.sessionSecret,
-  cookie:
-    maxAge: 60 * 10 * 1000
-}
-app.use flash()
-app.use session
-app.use (req, res, next) ->
-  res.locals.session = req.session
-  next()
+session(app)
 
 # Router
 app.use app.router

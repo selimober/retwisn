@@ -45,6 +45,9 @@ module.exports = (grunt) ->
         sourceRoot: ""
         bare: true
 
+      single:
+        expand: true, cwd: "src", src: ["**/*.coffee"], dest: TARGET_DIR, ext: '.js'
+
       compile:
         files: [
           {expand: true, cwd: "src", src: ["**/*.coffee"], dest: TARGET_DIR, ext: '.js'}
@@ -67,7 +70,7 @@ module.exports = (grunt) ->
 
       coffee:
         files: ['src/**/*.coffee']
-        tasks: ['coffeelint','coffee:compile']
+        tasks: ['coffeelint','coffee:single']
         options:
           livereload: true
 
@@ -93,7 +96,7 @@ module.exports = (grunt) ->
   grunt.event.on 'watch', (action, filepath) ->
     target = filepath.replace 'src/', ''
     if /coffee$/.test target
-      grunt.config ['coffee', 'compile', 'src'], [target]
+      grunt.config ['coffee', 'single', 'src'], [target]
       grunt.config ['coffeelint', 'app'], [filepath]
     else
       grunt.config ['copy', 'dev', 'src'], [target]

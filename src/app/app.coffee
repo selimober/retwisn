@@ -11,7 +11,9 @@ app = express()
 # Configuration
 settings = config.readConfig require.resolve './common/config.yaml'
 app.set 'settings', settings
-app.set 'views', './views'
+
+# 'app/views' instead of './views' because we start the app as 'node app/app.js'
+app.set 'views', 'app/views'
 app.set 'view engine', 'jade'
 
 # Simple logger, consider Winston for serious business

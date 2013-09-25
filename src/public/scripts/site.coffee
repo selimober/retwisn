@@ -39,7 +39,6 @@ UserPostsController = ($scope, $http) ->
     if not $scope.isSelfObserving
       $http.post('/api/isFollowing',
           {followingUser: $scope.loggedInUser, followedUser: $scope.username}).success (reply) ->
-        console.log reply
         $scope.followButtonDisabled = false
         isFollowing = reply?.isFollowing is 1
         if isFollowing

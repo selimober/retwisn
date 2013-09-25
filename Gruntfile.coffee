@@ -34,6 +34,9 @@ module.exports = (grunt) ->
         files: [
           {expand: true, cwd: "src", src: ["**/*", "!**/*.coffee"], dest: DIST_DIR}
           {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{DIST_DIR}/public"}
+          {expand: true, src: "package.json", dest: DIST_DIR}
+          {expand: true, src: "Procfile", dest: DIST_DIR}
+          {expand: true, src: "node_modules", dest: DIST_DIR}
         ]
 
     coffee:

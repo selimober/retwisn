@@ -80,8 +80,8 @@ module.exports = (grunt) ->
     nodemon:
       dev:
         options:
-          cwd: "#{TARGET_DIR}/app"
-          file: "app.js"
+          cwd: "#{TARGET_DIR}"
+          file: "app/app.js"
           ignoredFiles: ["*.jade", 'public/*']
 
     concurrent:

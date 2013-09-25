@@ -55,7 +55,6 @@ app.configure 'development', ->
   app.use express.errorHandler()
   app.locals.pretty = true
 
-
 process.on 'SIGINT', ->
   require('./common/provider').releaseResources()
   process.exit()

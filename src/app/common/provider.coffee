@@ -1,4 +1,4 @@
-redis = require 'redis'
+redis = require 'redis-url'
 config = require 'yaml-config'
 
 module.exports = ( ->
@@ -25,7 +25,10 @@ module.exports = ( ->
     createRedisClient: ->
       # create a new client if there is none
       if not @redisClient?
-        @redisClient = redis.createClient settings.redis.port, settings.redis.host
+        if process.env.REDISTOGO_URL?
+          @redisClient = redis.connect process.env.REDISTOGO_URL
+        else
+          @redisClient = redis.createClient settings.redis.port, settings.redis.host
       else
         @redisClient
 

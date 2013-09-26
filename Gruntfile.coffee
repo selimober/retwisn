@@ -13,7 +13,11 @@ module.exports = (grunt) ->
 
     clean:
       dev: [TARGET_DIR]
-      dist: [DIST_DIR]
+      dist:
+        files: [
+          {src: ["#{DIST_DIR}/app/**/*", "#{DIST_DIR}/public/**/*"]}
+          {src: ["#{DIST_DIR}/*"], filter: 'isFile'}
+        ]
 
     coffeelint:
       app: ["src/**/*.coffee", "test/**/*.coffee"]
@@ -36,7 +40,6 @@ module.exports = (grunt) ->
           {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{DIST_DIR}/public"}
           {expand: true, src: "package.json", dest: DIST_DIR}
           {expand: true, src: "Procfile", dest: DIST_DIR}
-          {expand: true, src: "node_modules", dest: DIST_DIR}
         ]
 
     coffee:

@@ -19,7 +19,7 @@ app.use (req, res, next) ->
   next()
 
 # Send statics
-app.use '/assets/', express.static(path.join(__dirname, '../public'))
+app.use '/assets/', express.static(path.join(__dirname, '../web'))
 
 # Parse POST and fileUploads queries
 app.use express.bodyParser()
@@ -38,6 +38,7 @@ app.configure 'development', ->
   app.use express.errorHandler()
   app.locals.pretty = true
 
+# Close Redis connection on shutdown
 process.on 'SIGINT', ->
   require('./common/provider').releaseResources()
   process.exit()

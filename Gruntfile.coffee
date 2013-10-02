@@ -3,9 +3,6 @@ module.exports = (grunt) ->
   TARGET_DIR = 'target'
   DIST_DIR = 'dist'
   APP_DIR = 'src/app'
-  my_files = ['app.coffee', 'conf/**/*.coffee',
-          'service/**/*.coffee', 'controller/**/*.coffee',
-          'model/**/*.coffee', 'public/scripts/**/*.coffee']
   my_test_files = ['test/**/*.coffee']
 
   grunt.initConfig
@@ -15,7 +12,7 @@ module.exports = (grunt) ->
       dev: [TARGET_DIR]
       dist:
         files: [
-          {src: ["#{DIST_DIR}/app/**/*", "#{DIST_DIR}/public/**/*"]}
+          {src: ["#{DIST_DIR}/app/**/*", "#{DIST_DIR}/web/**/*"]}
           {src: ["#{DIST_DIR}/*"], filter: 'isFile'}
         ]
 
@@ -29,15 +26,18 @@ module.exports = (grunt) ->
           level: 'error'
 
     copy:
+      single:
+        expand: true, cwd: "src", src: ["**/*"], dest: TARGET_DIR
+
       dev:
         files: [
           {expand: true, cwd: "src", src: ["**/*"], dest: TARGET_DIR}
-          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{TARGET_DIR}/public"}
+          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{TARGET_DIR}/web"}
         ]
       dist:
         files: [
           {expand: true, cwd: "src", src: ["**/*", "!**/*.coffee"], dest: DIST_DIR}
-          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{DIST_DIR}/public"}
+          {expand: true, cwd: "vendor", src: ["**/*"], dest: "#{DIST_DIR}/web"}
           {expand: true, src: "package.json", dest: DIST_DIR}
           {expand: true, src: "Procfile", dest: DIST_DIR}
         ]
@@ -79,7 +79,7 @@ module.exports = (grunt) ->
 
       other:
         files: ['src/**/*', '!src/**/*.coffee']
-        tasks: ['copy:dev']
+        tasks: ['copy:single']
         options:
           livereload: true
 
@@ -88,7 +88,7 @@ module.exports = (grunt) ->
         options:
           cwd: "#{TARGET_DIR}"
           file: "app/app.js"
-          ignoredFiles: ["*.jade", 'public/*']
+          ignoredFiles: ["*.jade", 'web/*']
 
     concurrent:
       target:
@@ -102,7 +102,7 @@ module.exports = (grunt) ->
       grunt.config ['coffee', 'single', 'src'], [target]
       grunt.config ['coffeelint', 'app'], [filepath]
     else
-      grunt.config ['copy', 'dev', 'src'], [target]
+      grunt.config ['copy', 'single', 'src'], [target]
 
 
   grunt.loadNpmTasks 'grunt-mocha-cli'

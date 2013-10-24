@@ -2,7 +2,7 @@ assert = require "assert"
 sinon = require "sinon"
 should = require "should"
 
-UserController = require '../../controller/user-controller'
+UserController = require '../../src/app/user/user-controller'
 
 describe 'UserController', ->
 
@@ -16,7 +16,7 @@ describe 'UserController', ->
     it 'should render to /home with error if username empty', ->
       # Arrange
       req =
-        param:
+        body:
           password: 'xcxc'
           username: ''
 
@@ -30,7 +30,7 @@ describe 'UserController', ->
     it 'should render to /home with error if password empty', ->
       # Arrange
       req =
-        param:
+        body:
           password: ''
           username: 'user'
 
@@ -49,7 +49,7 @@ describe 'UserController', ->
           callback null, {username: username, password: password}
 
       req =
-        param:
+        body:
           password: 'secret'
           username: 'user'
 
@@ -64,7 +64,7 @@ describe 'UserController', ->
     it 'should render to /home with error if username or password is empty', ->
       # Arrange
       req =
-        param:
+        body:
           password: 'secret'
           username: ''
 
@@ -77,7 +77,7 @@ describe 'UserController', ->
 
       # Arrange
       req =
-        param:
+        body:
           password: ''
           username: 'user'
 
@@ -108,7 +108,7 @@ describe 'UserController', ->
     it 'should redirect to /timeline and set the auth cookie to authSecret if username / password match', ->
       # Arange
       req =
-        param:
+        body:
           password: 'secret'
           username: 'user'
         app:
@@ -154,7 +154,7 @@ describe 'UserController', ->
     it 'should render /timeline with error given an empty following and followed username', ->
       # Arrange
       req =
-        param: {}
+        body: {}
 
       # Act
       sut = new UserController
@@ -166,7 +166,7 @@ describe 'UserController', ->
     it 'should render /timeline with error given an unexisting username', ->
       # Arrange
       req =
-        param:
+        body:
           followedUserName: 'cem'
         loggedInUsername: 'selim'
 

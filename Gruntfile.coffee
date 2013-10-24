@@ -3,7 +3,7 @@ module.exports = (grunt) ->
   TARGET_DIR = 'target'
   DIST_DIR = 'dist'
   APP_DIR = 'src/app'
-  my_test_files = ['test/**/*.coffee']
+  unit_tests = ['test/unit/**/*.coffee']
 
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
@@ -64,7 +64,8 @@ module.exports = (grunt) ->
         ]
 
     mochacli:
-      all: my_test_files
+      unit:
+        src: unit_tests
 
     watch:
       options:
@@ -116,3 +117,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'dist', ['clean:dist', 'coffeelint', 'coffee:dist', 'copy:dist']
   grunt.registerTask 'default', ['clean:dev', 'coffeelint', 'coffee:compile', 'copy:dev', 'concurrent']
+  grunt.registerTask 'unit', ['mochacli']
